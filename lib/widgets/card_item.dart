@@ -45,8 +45,8 @@ class CardItem extends StatelessWidget {
                 flex: 3,
                 child: ClipRRect(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    bottomLeft: Radius.circular(12),
+                    topLeft: Radius.circular(10),
+                    bottomLeft: Radius.circular(10),
                   ),
                   child: Image.network(
                     "https://cnet2.cbsistatic.com/img/71wqPB80Rvuu1Q1vUBGFXHe77PI=/940x0/2017/10/04/a822218f-dfef-41c2-a613-1430f6ec6c82/100417-google-home-mini7347.jpg",
@@ -55,13 +55,13 @@ class CardItem extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: 15,
+                width: 10,
               ),
               Expanded(
                 flex: 4,
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 4.0, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 3.0, vertical: 5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
