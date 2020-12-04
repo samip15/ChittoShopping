@@ -25,7 +25,7 @@ class ProductDetailScreen extends StatelessWidget {
       ),
       subtitle: Text(
         desc,
-        style: themeConst.textTheme.subtitle2.copyWith(color: grayColor),
+        style: themeConst.textTheme.subtitle2.copyWith(color: greyColor),
       ),
     );
   }

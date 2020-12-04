@@ -44,7 +44,7 @@ class ProductItem extends StatelessWidget {
                     Text(
                       title,
                       style: themeData.textTheme.subtitle1.copyWith(
-                          fontWeight: FontWeight.w600, color: grayColor),
+                          fontWeight: FontWeight.w600, color: greyColor),
                     ),
                     Text(
                       "Rs $price",
