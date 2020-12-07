@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatelessWidget {
+class UserProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text("Profile"),
+      child: Text("Message"),
     );
   }
 }

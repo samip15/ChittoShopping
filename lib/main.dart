@@ -1,8 +1,11 @@
 import 'package:chito_shopping/model/screens/botton_overview_screen.dart';
-import 'package:chito_shopping/model/screens/products/product_detail_screen.dart';
-import 'package:chito_shopping/model/screens/products/product_list_screen.dart';
-import 'package:chito_shopping/theme/constants.dart';
+import 'package:chito_shopping/model/screens/profile/favoroite_screen.dart';
+import 'package:chito_shopping/provider/product_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'model/screens/Home/product_detail_screen.dart';
+import 'model/screens/Home/product_list_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,32 +15,40 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Chito Shopping',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Color(0xFFF77866),
-        accentColor: Color(0xFFF7B733),
-        fontFamily: "Montserrat",
-        appBarTheme: AppBarTheme(
-          elevation: 0,
-          color: Colors.white,
-          iconTheme: IconThemeData(color: Color(0xFFF77866)),
-          textTheme: TextTheme(
-            headline6: TextStyle(
-                fontFamily: "Montserrat",
-                fontWeight: FontWeight.w600,
-                color: blackColor,
-                fontSize: 24),
+    return ChangeNotifierProvider(
+      create: (BuildContext context) {
+        return Products();
+      },
+      child: MaterialApp(
+        title: 'Chito Shopping',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: Colors.redAccent.shade200,
+          primaryColorDark: Colors.redAccent.shade200,
+          primaryColorLight: Colors.redAccent.shade200,
+          accentColor: Color(0xFFF7B733),
+          canvasColor: Colors.white,
+          fontFamily: "Montserrat",
+          appBarTheme: AppBarTheme(
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.white),
+            textTheme: TextTheme(
+              headline6: TextStyle(
+                  fontFamily: "Montserrat",
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  fontSize: 24),
+            ),
           ),
         ),
+        initialRoute: BottomOverviewScreen.routeName,
+        routes: {
+          BottomOverviewScreen.routeName: (ctx) => BottomOverviewScreen(),
+          FavouritesScreen.routeName: (ctx) => FavouritesScreen(),
+          ProductListScreen.routeName: (ctx) => ProductListScreen(),
+          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+        },
       ),
-      initialRoute: BottomOverviewScreen.routeName,
-      routes: {
-        BottomOverviewScreen.routeName: (ctx) => BottomOverviewScreen(),
-        ProductListScreen.routeName: (ctx) => ProductListScreen(),
-        ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-      },
     );
   }
 }

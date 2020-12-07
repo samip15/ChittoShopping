@@ -1,21 +1,23 @@
-import 'package:chito_shopping/model/screens/products/product_detail_screen.dart';
+import 'package:chito_shopping/model/screens/Home/product_detail_screen.dart';
+import 'package:chito_shopping/provider/product_provider.dart';
 import 'package:chito_shopping/theme/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
-  final String imageUrl;
-  final double price;
-  final String title;
-  const ProductItem({this.imageUrl, this.price, this.title});
+  final String id;
+  const ProductItem({this.id});
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
     double mHeight = mediaQuery.size.height;
     double mWidth = mediaQuery.size.width;
     ThemeData themeData = Theme.of(context);
+    final loadedProduct = Provider.of<Products>(context).findProductById(id);
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, ProductDetailScreen.routeName);
+        Navigator.pushNamed(context, ProductDetailScreen.routeName,
+            arguments: id);
       },
       child: Card(
         elevation: 4,
@@ -30,10 +32,10 @@ class ProductItem extends StatelessWidget {
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15), topRight: Radius.circular(15)),
               child: Image.network(
-                imageUrl,
+                loadedProduct.imageUrl,
                 fit: BoxFit.fitWidth,
-                height: mHeight * 0.11,
-                width: mWidth * 0.21,
+                height: mHeight * 0.10,
+                width: mWidth * 0.20,
               ),
             ),
             Container(
@@ -42,12 +44,12 @@ class ProductItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
+                      loadedProduct.title,
                       style: themeData.textTheme.subtitle1.copyWith(
                           fontWeight: FontWeight.w600, color: greyColor),
                     ),
                     Text(
-                      "Rs $price",
+                      "Rs ${loadedProduct.price}",
                       style: themeData.textTheme.subtitle1.copyWith(
                           fontWeight: FontWeight.w800, color: blackColor),
                     ),
