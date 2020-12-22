@@ -1,10 +1,12 @@
+import 'package:chito_shopping/model/screens/cart/cart_screen.dart';
+import 'package:chito_shopping/model/screens/home/home_screen.dart';
+import 'package:chito_shopping/model/screens/profile/profile_screen.dart';
+import 'package:chito_shopping/model/screens/user_product/edit_product_screen.dart';
+import 'package:chito_shopping/model/screens/user_product/user_product_screen.dart';
+import 'package:chito_shopping/provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'file:///E:/flutterprojects/chito_shopping/lib/model/screens/cart/cart_screen.dart';
-import 'file:///E:/flutterprojects/chito_shopping/lib/model/screens/home/home_screen.dart';
-import 'file:///E:/flutterprojects/chito_shopping/lib/model/screens/profile/profile_screen.dart';
-import 'file:///E:/flutterprojects/chito_shopping/lib/model/screens/user_product/user_product_screen.dart';
+import 'package:provider/provider.dart';
 
 class BottomOverviewScreen extends StatefulWidget {
   static const String routeName = "/bottom_overview_screen";
@@ -16,6 +18,8 @@ class _BottomOverviewScreenState extends State<BottomOverviewScreen> {
   // current page
   int _selectedPageIndex = 0;
   ThemeData themeConst;
+  bool _isInit = true;
+  bool _isLoading = false;
   // change the index
   void _selectPage(int index) {
     setState(() {
@@ -56,6 +60,13 @@ class _BottomOverviewScreenState extends State<BottomOverviewScreen> {
       case 2:
         return AppBar(
           title: Text("My Products"),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.pushNamed(context, EditProductScreen.routeName);
+                })
+          ],
           backgroundColor: themeConst.primaryColor,
         );
       case 3:
@@ -72,6 +83,26 @@ class _BottomOverviewScreenState extends State<BottomOverviewScreen> {
   }
 
   @override
+  void didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        await Provider.of<Products>(context, listen: false).fetchAllProducts();
+      } catch (error) {
+        print(error);
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
+    _isInit = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     themeConst = Theme.of(context);
     SystemChrome.setSystemUIOverlayStyle(
@@ -79,7 +110,11 @@ class _BottomOverviewScreenState extends State<BottomOverviewScreen> {
     );
     return Scaffold(
       appBar: _getCurrentAppBar(),
-      body: _getCurrentPage(),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : _getCurrentPage(),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 20,
         currentIndex: _selectedPageIndex,

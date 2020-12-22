@@ -1,5 +1,9 @@
 import 'package:chito_shopping/model/screens/botton_overview_screen.dart';
 import 'package:chito_shopping/model/screens/profile/favoroite_screen.dart';
+import 'package:chito_shopping/model/screens/profile/orders_screen.dart';
+import 'package:chito_shopping/model/screens/user_product/edit_product_screen.dart';
+import 'package:chito_shopping/provider/cart_provider.dart';
+import 'package:chito_shopping/provider/order_provider.dart';
 import 'package:chito_shopping/provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,17 +19,31 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (BuildContext context) {
-        return Products();
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (BuildContext context) {
+            return Products();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext context) {
+            return Cart();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext context) {
+            return Orders();
+          },
+        ),
+      ],
       child: MaterialApp(
         title: 'Chito Shopping',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: Colors.redAccent.shade200,
-          primaryColorDark: Colors.redAccent.shade200,
-          primaryColorLight: Colors.redAccent.shade200,
+          primaryColor: Colors.green,
+          primaryColorDark: Colors.green,
+          primaryColorLight: Colors.green,
           accentColor: Color(0xFFF7B733),
           canvasColor: Colors.white,
           fontFamily: "Montserrat",
@@ -47,6 +65,8 @@ class MyApp extends StatelessWidget {
           FavouritesScreen.routeName: (ctx) => FavouritesScreen(),
           ProductListScreen.routeName: (ctx) => ProductListScreen(),
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+          OrderScreen.routeName: (ctx) => OrderScreen(),
+          EditProductScreen.routeName: (ctx) => EditProductScreen(),
         },
       ),
     );

@@ -13,7 +13,8 @@ class ProductItem extends StatelessWidget {
     double mHeight = mediaQuery.size.height;
     double mWidth = mediaQuery.size.width;
     ThemeData themeData = Theme.of(context);
-    final loadedProduct = Provider.of<Products>(context).findProductById(id);
+    final loadedProduct =
+        Provider.of<Products>(context, listen: false).findProductById(id);
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, ProductDetailScreen.routeName,
@@ -25,37 +26,46 @@ class ProductItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-              child: Image.network(
-                loadedProduct.imageUrl,
-                fit: BoxFit.fitWidth,
-                height: mHeight * 0.10,
-                width: mWidth * 0.20,
+        child: Container(
+          height: mHeight * 0.15,
+          width: mWidth * 0.35,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12)),
+                child: Image.network(
+                  loadedProduct.imageUrl,
+                  fit: BoxFit.cover,
+                  height: mHeight * 0.12,
+                ),
               ),
-            ),
-            Container(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      loadedProduct.title,
-                      style: themeData.textTheme.subtitle1.copyWith(
-                          fontWeight: FontWeight.w600, color: greyColor),
-                    ),
-                    Text(
-                      "Rs ${loadedProduct.price}",
-                      style: themeData.textTheme.subtitle1.copyWith(
-                          fontWeight: FontWeight.w800, color: blackColor),
-                    ),
-                  ],
-                )),
-          ],
+              Container(
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        loadedProduct.title,
+                        overflow: TextOverflow.ellipsis,
+                        style: themeData.textTheme.subtitle1.copyWith(
+                            fontWeight: FontWeight.w600, color: greyColor),
+                      ),
+                      Text(
+                        "Rs ${loadedProduct.price}",
+                        softWrap: true,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: themeData.textTheme.subtitle1.copyWith(
+                            fontWeight: FontWeight.w800, color: blackColor),
+                      ),
+                    ],
+                  )),
+            ],
+          ),
         ),
       ),
     );

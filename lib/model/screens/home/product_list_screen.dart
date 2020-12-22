@@ -11,7 +11,7 @@ class ProductListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeConst = Theme.of(context);
     final title = ModalRoute.of(context).settings.arguments as String;
-    final productsProvider = Provider.of<Products>(context);
+    final productsProvider = Provider.of<Products>(context, listen: false);
     final loadedProducts = title == "Flash Sale"
         ? productsProvider.flashSaleProducts
         : productsProvider.newProducts;
@@ -30,8 +30,8 @@ class ProductListScreen extends StatelessWidget {
       body: GridView.builder(
           padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 1 / 1.4,
+              crossAxisCount: 2,
+              childAspectRatio: 1.1,
               crossAxisSpacing: 5,
               mainAxisSpacing: 10),
           itemCount: loadedProducts.length,

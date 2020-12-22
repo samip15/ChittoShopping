@@ -143,7 +143,7 @@ class HomeScreen extends StatelessWidget {
                         arguments: "Flash Sale");
                   }),
               Container(
-                height: mHeight * 0.22,
+                height: mHeight * 0.24,
                 child: ListView.builder(
                   padding: const EdgeInsets.all(10),
                   scrollDirection: Axis.horizontal,
@@ -165,7 +165,7 @@ class HomeScreen extends StatelessWidget {
                         arguments: "New Products");
                   }),
               Container(
-                height: mHeight * 0.22,
+                height: mHeight * 0.23,
                 child: ListView.builder(
                   padding: const EdgeInsets.all(10),
                   scrollDirection: Axis.horizontal,

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "246877045945",
+    "project_id": "chittoshopping",
+    "storage_bucket": "chittoshopping.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:246877045945:android:07b13c84c7234332f4c768",
+        "android_client_info": {
+          "package_name": "com.samip.chito_shopping"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "246877045945-ilu02fu1anledkmm3um1qpqs6l2ve46a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhc8GPyRfvRN-FTL_mftNa2a4N2MVjPj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "246877045945-ilu02fu1anledkmm3um1qpqs6l2ve46a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

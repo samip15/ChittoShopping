@@ -1,3 +1,4 @@
+import 'package:chito_shopping/provider/cart_provider.dart';
 import 'package:chito_shopping/provider/product_provider.dart';
 import 'package:chito_shopping/theme/constants.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:provider/provider.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   ThemeData themeConst;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   static const String routeName = "/product_detail_screen";
   Chip _sizedChips({@required String title, @required Color color}) {
     return Chip(
@@ -37,8 +39,11 @@ class ProductDetailScreen extends StatelessWidget {
     final mHeight = mediaQuery.size.height;
     themeConst = Theme.of(context);
     final id = ModalRoute.of(context).settings.arguments as String;
-    final loadedProduct = Provider.of<Products>(context).findProductById(id);
+    final provider = Provider.of<Products>(context, listen: false);
+    final loadedProduct = provider.findProductById(id);
+    final cart = Provider.of<Cart>(context, listen: false);
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(loadedProduct.title),
       ),
@@ -55,9 +60,7 @@ class ProductDetailScreen extends StatelessWidget {
               style: themeConst.textTheme.headline5
                   .copyWith(fontWeight: FontWeight.bold),
             ),
-            contentPadding: const EdgeInsets.all(18),
-            subtitle: Text(loadedProduct.title,
-                style: themeConst.textTheme.subtitle1.copyWith(fontSize: 18)),
+            contentPadding: const EdgeInsets.all(10),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -79,16 +82,22 @@ class ProductDetailScreen extends StatelessWidget {
                 SizedBox(
                   width: 5,
                 ),
-                IconButton(
-                  padding: const EdgeInsets.all(0),
-                  icon: Icon(
-                    loadedProduct.isFavourite
-                        ? Icons.favorite
-                        : Icons.favorite_border,
-                    size: 30,
-                  ),
-                  color: themeConst.primaryColor,
-                  onPressed: () {},
+                Consumer<Products>(
+                  builder: (ctx, product, child) {
+                    return IconButton(
+                      padding: const EdgeInsets.all(0),
+                      icon: Icon(
+                        loadedProduct.isFavourite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        size: 30,
+                      ),
+                      color: themeConst.primaryColor,
+                      onPressed: () {
+                        provider.toggleFavourite(id);
+                      },
+                    );
+                  },
                 ),
               ],
             ),
@@ -139,11 +148,27 @@ class ProductDetailScreen extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              color: themeConst.primaryColor,
+              color: Colors.lightGreen,
               textColor: Colors.white,
               icon: Icon(Icons.shopping_cart),
               label: Text("Add To Cart"),
-              onPressed: () {},
+              onPressed: () {
+                cart.addToCart(id, loadedProduct.title, loadedProduct.price);
+                _scaffoldKey.currentState.showSnackBar(
+                  SnackBar(
+                    backgroundColor: themeConst.accentColor,
+                    duration: Duration(seconds: 2),
+                    content: Text("Added Item To The Cart"),
+                    action: SnackBarAction(
+                      label: "UNDO",
+                      textColor: Colors.black87,
+                      onPressed: () {
+                        cart.removeSingleItem(id);
+                      },
+                    ),
+                  ),
+                );
+              },
             ),
           )
           // Row(

@@ -1,7 +1,10 @@
 import 'package:chito_shopping/model/screens/profile/favoroite_screen.dart';
+import 'package:chito_shopping/model/screens/profile/orders_screen.dart';
+import 'package:chito_shopping/provider/API.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileScreen extends StatelessWidget {
   ThemeData themeConst;
@@ -69,6 +72,9 @@ class ProfileScreen extends StatelessWidget {
           thickness: 2,
         ),
         ListTile(
+          onTap: () {
+            Navigator.pushNamed(context, OrderScreen.routeName);
+          },
           leading: Icon(
             FontAwesomeIcons.boxes,
             color: themeConst.accentColor,
@@ -109,6 +115,10 @@ class ProfileScreen extends StatelessWidget {
             style: themeConst.textTheme.subtitle1
                 .copyWith(fontWeight: FontWeight.w600),
           ),
+          onTap: () async {
+            final response = await http.get(API.products);
+            print(response.body);
+          },
         ),
         Divider(
           thickness: 2,
