@@ -158,7 +158,7 @@ class Products with ChangeNotifier {
         category: product.category,
         title: product.title,
         imageUrl: product.imageUrl,
-        description: product.descriptiongit
+        description: product.description,
         rating: product.rating,
         price: product.price,
         type: product.type,
