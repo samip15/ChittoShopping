@@ -10,14 +10,21 @@ class ProductListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeConst = Theme.of(context);
-    final title = ModalRoute.of(context).settings.arguments as String;
+    final mapArguments =
+        ModalRoute.of(context).settings.arguments as Map<String, String>;
     final productsProvider = Provider.of<Products>(context, listen: false);
-    final loadedProducts = title == "Flash Sale"
-        ? productsProvider.flashSaleProducts
-        : productsProvider.newProducts;
+    var loadedProducts;
+    if (mapArguments['diff'] == "category") {
+      loadedProducts =
+          productsProvider.getCategoryProducts(mapArguments['type']);
+    } else {
+      loadedProducts = mapArguments['type'] == "Flash Sale"
+          ? productsProvider.flashSaleProducts
+          : productsProvider.newProducts;
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(mapArguments['type']),
         actions: [
           IconButton(
               icon: Icon(

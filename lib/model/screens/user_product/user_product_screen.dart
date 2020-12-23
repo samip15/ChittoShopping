@@ -36,11 +36,50 @@ class UserProductScreen extends StatelessWidget {
                         arguments: userProducts[index].id);
                   }),
               IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    color: themeConst.errorColor,
-                  ),
-                  onPressed: () {}),
+                icon: Icon(
+                  Icons.delete,
+                  color: themeConst.errorColor,
+                ),
+                onPressed: () async {
+                  try {
+                    await productsProvider
+                        .deleteProduct(userProducts[index].id);
+                    showDialog(
+                      context: context,
+                      builder: (dCtx) => AlertDialog(
+                        title: Text("Success"),
+                        content: Text("Deleted the item!"),
+                        actions: [
+                          RaisedButton(
+                            onPressed: () {
+                              Navigator.pop(dCtx);
+                            },
+                            child: Text("Okay"),
+                            color: themeConst.primaryColor,
+                          ),
+                        ],
+                      ),
+                    );
+                  } catch (error) {
+                    showDialog(
+                      context: context,
+                      builder: (dCtx) => AlertDialog(
+                        title: Text("Error!"),
+                        content: Text("Cannot delete The Item!"),
+                        actions: [
+                          RaisedButton(
+                            onPressed: () {
+                              Navigator.pop(dCtx);
+                            },
+                            child: Text("Okay"),
+                            color: themeConst.primaryColor,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),

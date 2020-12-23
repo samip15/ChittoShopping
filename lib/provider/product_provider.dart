@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:chito_shopping/provider/API.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -8,7 +10,7 @@ import 'package:http/http.dart' as http;
 class Product with ChangeNotifier {
   final String id;
   final String title;
-  final String imageUrl;
+  String imageUrl;
   final String description;
   final String rating;
   final double price;
@@ -19,7 +21,7 @@ class Product with ChangeNotifier {
       {@required this.id,
       @required this.category,
       @required this.title,
-      @required this.imageUrl,
+      this.imageUrl,
       @required this.description,
       @required this.rating,
       @required this.price,
@@ -90,6 +92,11 @@ class Products with ChangeNotifier {
     return [..._products.where((prod) => prod.type == "New").toList()];
   }
 
+  // Get The new sale Product List
+  List<Product> getCategoryProducts(String category) {
+    return [..._products.where((prod) => prod.category == category).toList()];
+  }
+
   // Get The favourite Product List
   List<Product> get favProducts {
     return [..._products.where((prod) => prod.isFavourite).toList()];
@@ -136,32 +143,38 @@ class Products with ChangeNotifier {
   }
 
   // add product
-  Future<void> addProduct(Product product) async {
+  Future<void> addProduct(Product addProduct, File imageFile) async {
     // add to firebase
     try {
+      final addMap = {
+        "category": addProduct.category,
+        "title": addProduct.title,
+        "description": addProduct.description,
+        "rating": addProduct.rating,
+        "price": addProduct.price,
+        "type": addProduct.type,
+        "imageUrl": "",
+      };
+      if (imageFile != null) {
+        addMap["imageUrl"] =
+            await uploadProductPhoto(DateTime.now().toString(), imageFile);
+        addProduct.imageUrl = addMap["imageUrl"];
+      }
       final response = await http.post(
         API.products,
-        body: json.encode({
-          "category": product.category,
-          "title": product.title,
-          "imageUrl": product.imageUrl,
-          "description": product.description,
-          "rating": product.rating,
-          "price": product.price,
-          "type": product.type,
-        }),
+        body: json.encode(addMap),
       );
       print(response.body);
       final id = json.decode(response.body);
       final newProduct = Product(
         id: id["name"],
-        category: product.category,
-        title: product.title,
-        imageUrl: product.imageUrl,
-        description: product.description,
-        rating: product.rating,
-        price: product.price,
-        type: product.type,
+        category: addProduct.category,
+        title: addProduct.title,
+        imageUrl: addProduct.imageUrl,
+        description: addProduct.description,
+        rating: addProduct.rating,
+        price: addProduct.price,
+        type: addProduct.type,
       );
       _products.add(newProduct);
       notifyListeners();
@@ -172,26 +185,72 @@ class Products with ChangeNotifier {
   }
 
   // update product
-  Future<void> updateProduct(String id, Product updatedProduct) async {
+  Future<void> updateProduct(
+      String id, Product updatedProduct, File imageFile) async {
     // add to firebase
     try {
       final prodIndex = _products.indexWhere((prod) => prod.id == id);
+      Map updatedMap = {
+        "category": updatedProduct.category,
+        "title": updatedProduct.title,
+        "imageUrl": updatedProduct.imageUrl,
+        "description": updatedProduct.description,
+        "rating": updatedProduct.rating,
+        "price": updatedProduct.price,
+        "type": updatedProduct.type,
+      };
+      if (imageFile != null) {
+        updatedMap["imageUrl"] = await uploadProductPhoto(id, imageFile);
+        updatedProduct.imageUrl = updatedMap["imageUrl"];
+      }
       final response = await http.patch(
         API.baseUrl + "/products/$id.json",
-        body: json.encode({
-          "category": updatedProduct.category,
-          "title": updatedProduct.title,
-          "imageUrl": updatedProduct.imageUrl,
-          "description": updatedProduct.description,
-          "rating": updatedProduct.rating,
-          "price": updatedProduct.price,
-          "type": updatedProduct.type,
-        }),
+        body: json.encode(updatedMap),
       );
       print(response.body);
       _products[prodIndex] = updatedProduct;
       _products.add(updatedProduct);
       notifyListeners();
+    } catch (error) {
+      print(error);
+      throw (error);
+    }
+  }
+
+  // delete product
+  Future<void> deleteProduct(String productId) async {
+    try {
+      final prodIndex = _products.indexWhere((prod) => prod.id == productId);
+      Product existingProduct = _products[prodIndex];
+      // remove the product
+      _products.removeAt(prodIndex);
+      notifyListeners();
+      final response =
+          await http.delete(API.baseUrl + "/products/$productId.json");
+      // if firebase could not delete
+      if (response.statusCode >= 400) {
+        _products.insert(prodIndex, existingProduct);
+        throw HttpException("Could not be deleted! Try Again!");
+        notifyListeners();
+      } else {
+        existingProduct = null;
+      }
+    } catch (error) {
+      print(error);
+      throw (error);
+    }
+  }
+
+  // upload product photo to firebase
+  Future<String> uploadProductPhoto(String productId, File imageFile) async {
+    try {
+      String imageFileName = imageFile.path.split('/').last;
+      Reference storageRef = FirebaseStorage.instance
+          .ref()
+          .child('products/$productId/$imageFileName');
+      UploadTask uploadTask = storageRef.putFile(imageFile);
+      String imageUrl = await (await uploadTask).ref.getDownloadURL();
+      return imageUrl;
     } catch (error) {
       print(error);
       throw (error);

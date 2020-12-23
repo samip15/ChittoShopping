@@ -4,28 +4,59 @@ import 'package:chito_shopping/widgets/order_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class OrderScreen extends StatelessWidget {
+class OrderScreen extends StatefulWidget {
   static const String routeName = "/order_screen";
+
+  @override
+  _OrderScreenState createState() => _OrderScreenState();
+}
+
+class _OrderScreenState extends State<OrderScreen> {
+  Future _fetchAllorders;
+  bool _isInit = true;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      _fetchAllorders =
+          Provider.of<Orders>(context, listen: false).fetchAllAndSetOrders();
+    }
+    _isInit = false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final orderlist = Provider.of<Orders>(context).orders;
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Orders"),
       ),
-      body: orderlist.length == 0
-          ? EmptyOrder(
-              type: "Order",
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              itemBuilder: (context, i) {
-                return OrderItem(
-                  orderItem: orderlist[i],
-                );
-              },
-              itemCount: orderlist.length,
-            ),
+      body: FutureBuilder(
+        future: _fetchAllorders,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          return snapshot.connectionState == ConnectionState.waiting
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : snapshot.hasError
+                  ? Center(
+                      child: Text("Something went wrong !!"),
+                    )
+                  : snapshot.data == []
+                      ? EmptyOrder(
+                          type: "Order",
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          itemBuilder: (context, i) {
+                            return OrderItem(
+                              orderItem: snapshot.data[i],
+                            );
+                          },
+                          itemCount: snapshot.data.length,
+                        );
+        },
+      ),
     );
   }
 }

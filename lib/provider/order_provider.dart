@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:chito_shopping/provider/API.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 
 import 'cart_provider.dart';
 
@@ -7,9 +11,11 @@ class OrderItem {
   final double amount;
   final List<CartItem> products;
   final DateTime dateTime;
+  final String status;
 
   OrderItem(
       {@required this.id,
+      @required this.status,
       @required this.amount,
       @required this.products,
       @required this.dateTime});
@@ -21,15 +27,75 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
+  // fetch all orders
+  Future<List<OrderItem>> fetchAllAndSetOrders() async {
+    try {
+      final response = await http.get(
+        API.orders,
+      );
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      if (extractedData == null) {
+        return [];
+      }
+      final List<OrderItem> _loadedOrders = [];
+      extractedData.forEach((orderId, orderData) {
+        _loadedOrders.add(
+          OrderItem(
+            id: orderId,
+            status: orderData['status'],
+            amount: double.parse(orderData['amount']),
+            products: (orderData['products'] as List<dynamic>)
+                .map((cartItem) => CartItem(
+                    id: cartItem['id'],
+                    title: cartItem['title'],
+                    price: cartItem['price'],
+                    quantity: cartItem['quantity']))
+                .toList(),
+            dateTime: DateTime.parse(
+              orderData['dateTime'],
+            ),
+          ),
+        );
+      });
+      _orders = _loadedOrders.reversed.toList();
+      return orders;
+    } catch (error) {}
+  }
+
   // add cart to order
-  void addOrder(List<CartItem> cartProducts, double total) {
-    _orders.add(
-      OrderItem(
-        id: DateTime.now().toString(),
-        amount: total,
-        products: cartProducts,
-        dateTime: DateTime.now(),
-      ),
-    );
+  Future<void> addOrder(List<CartItem> cartProducts, double total) async {
+    try {
+      final response = await http.post(
+        API.orders,
+        body: json.encode(
+          {
+            'amount': total,
+            'dateTime': DateTime.now().toIso8601String(),
+            'status': "Pending",
+            'products': cartProducts
+                .map(
+                  (cp) => {
+                    'id': cp.id,
+                    'quantity': cp.quantity,
+                    'price': cp.price,
+                    'title': cp.title,
+                  },
+                )
+                .toList()
+          },
+        ),
+      );
+      final id = json.decode(response.body);
+      _orders.add(
+        OrderItem(
+          id: id['name'],
+          amount: total,
+          status: "Pending",
+          products: cartProducts,
+          dateTime: DateTime.now(),
+        ),
+      );
+      notifyListeners();
+    } catch (error) {}
   }
 }

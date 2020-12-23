@@ -13,35 +13,39 @@ class HomeScreen extends StatelessWidget {
   Widget _getCategoryItems(
       {@required String title,
       @required IconData icon,
+      @required Function onPress,
       @required Color color}) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          height: mHeight * 0.05,
-          width: mWidth * 0.14,
-          padding:
-              const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [color.withOpacity(0.7), color],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+    return InkWell(
+      onTap: onPress,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: mHeight * 0.05,
+            width: mWidth * 0.14,
+            padding:
+                const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [color.withOpacity(0.7), color],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              color: color,
+              borderRadius: BorderRadius.circular(15),
             ),
-            color: color,
-            borderRadius: BorderRadius.circular(15),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
-          child: Icon(
-            icon,
-            color: Colors.white,
-            size: 22,
+          SizedBox(
+            height: mHeight * 0.01,
           ),
-        ),
-        SizedBox(
-          height: mHeight * 0.01,
-        ),
-        Text(title)
-      ],
+          Text(title)
+        ],
+      ),
     );
   }
 
@@ -116,19 +120,45 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   _getCategoryItems(
                       title: "Clothing",
+                      onPress: () {
+                        Navigator.pushNamed(
+                            context, ProductListScreen.routeName, arguments: {
+                          "type": "Clothing",
+                          "diff": "category"
+                        });
+                      },
                       icon: FontAwesomeIcons.tshirt,
                       color: themeConst.primaryColor),
                   _getCategoryItems(
                     title: "Electronics",
+                    onPress: () {
+                      Navigator.pushNamed(context, ProductListScreen.routeName,
+                          arguments: {
+                            "type": "Electronics",
+                            "diff": "category"
+                          });
+                    },
                     icon: FontAwesomeIcons.laptop,
                     color: Colors.green,
                   ),
                   _getCategoryItems(
                       title: "Furniture",
+                      onPress: () {
+                        Navigator.pushNamed(
+                            context, ProductListScreen.routeName, arguments: {
+                          "type": "Furniture",
+                          "diff": "category"
+                        });
+                      },
                       icon: FontAwesomeIcons.couch,
                       color: Colors.blue),
                   _getCategoryItems(
                       title: "Sports",
+                      onPress: () {
+                        Navigator.pushNamed(
+                            context, ProductListScreen.routeName,
+                            arguments: {"type": "Sports", "diff": "category"});
+                      },
                       icon: FontAwesomeIcons.basketballBall,
                       color: Colors.purple),
                 ],
@@ -140,7 +170,7 @@ class HomeScreen extends StatelessWidget {
                   title: "Flash Sale",
                   onPress: () {
                     Navigator.pushNamed(context, ProductListScreen.routeName,
-                        arguments: "Flash Sale");
+                        arguments: {"type": "Flash Sale", "diff": "type"});
                   }),
               Container(
                 height: mHeight * 0.24,
@@ -162,7 +192,7 @@ class HomeScreen extends StatelessWidget {
                   title: "New Product",
                   onPress: () {
                     Navigator.pushNamed(context, ProductListScreen.routeName,
-                        arguments: "New Products");
+                        arguments: {"type": "New Product", "diff": "type"});
                   }),
               Container(
                 height: mHeight * 0.23,

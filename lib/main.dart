@@ -5,13 +5,16 @@ import 'package:chito_shopping/model/screens/user_product/edit_product_screen.da
 import 'package:chito_shopping/provider/cart_provider.dart';
 import 'package:chito_shopping/provider/order_provider.dart';
 import 'package:chito_shopping/provider/product_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'model/screens/Home/product_detail_screen.dart';
 import 'model/screens/Home/product_list_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 

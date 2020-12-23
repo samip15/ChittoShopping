@@ -62,8 +62,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading = true;
     });
     final newProduct = Product(
-        imageUrl:
-            "https://i2.wp.com/www.eatthis.com/wp-content/uploads/2018/05/mcdonalds-burger-fries-soda.jpg?resize=640%2C360&ssl=1",
         id: DateTime.now().toString(),
         price: double.parse(_price),
         category: _category,
@@ -72,12 +70,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
         type: _selectedType,
         title: _title);
     try {
-      if (_id.isNotEmpty && _id != null) {
+      if (_id != null) {
         await Provider.of<Products>(context, listen: false)
-            .updateProduct(_id, newProduct);
+            .updateProduct(_id, newProduct, _imageFile);
       } else {
         await Provider.of<Products>(context, listen: false)
-            .addProduct(newProduct);
+            .addProduct(newProduct, _imageFile);
       }
       Navigator.pop(context);
     } catch (error) {
@@ -209,11 +207,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 if (value.isEmpty) {
                   return "Price is required";
                 }
-                if (double.parse(value) < 0) {
-                  return "Price cannot be negative value";
-                }
                 if (double.tryParse(value) == null) {
                   return "Price should be in number format";
+                }
+                if (double.parse(value) < 0) {
+                  return "Price cannot be negative value";
                 }
                 return null;
               },
