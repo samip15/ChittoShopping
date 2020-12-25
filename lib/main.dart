@@ -1,3 +1,5 @@
+import 'package:chito_shopping/auth/login_screen.dart';
+import 'package:chito_shopping/auth/register_screen.dart';
 import 'package:chito_shopping/model/screens/botton_overview_screen.dart';
 import 'package:chito_shopping/model/screens/profile/favoroite_screen.dart';
 import 'package:chito_shopping/model/screens/profile/orders_screen.dart';
@@ -62,13 +64,15 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        initialRoute: BottomOverviewScreen.routeName,
+        initialRoute: LoginScreen.routeName,
         routes: {
           BottomOverviewScreen.routeName: (ctx) => BottomOverviewScreen(),
           FavouritesScreen.routeName: (ctx) => FavouritesScreen(),
           ProductListScreen.routeName: (ctx) => ProductListScreen(),
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
           OrderScreen.routeName: (ctx) => OrderScreen(),
+          RegisterScreen.routeName: (ctx) => RegisterScreen(),
+          LoginScreen.routeName: (ctx) => LoginScreen(),
           EditProductScreen.routeName: (ctx) => EditProductScreen(),
         },
       ),
