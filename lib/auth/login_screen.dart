@@ -1,7 +1,10 @@
 import 'package:chito_shopping/auth/register_screen.dart';
+import 'package:chito_shopping/model/screens/botton_overview_screen.dart';
+import 'package:chito_shopping/provider/auth_provider.dart';
 import 'package:chito_shopping/theme/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = "/login_screen";
@@ -12,12 +15,45 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   ThemeData themeConst;
-
   double mHeight, mWidth;
-
   final _form_key = GlobalKey<FormState>();
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isLoading = false;
   bool _hidePassword = true;
+  RegExp emailRegex = RegExp(
+      "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$");
+
+  // vars
+  String email, password;
+
+  void _saveForm() async {
+    bool isValid = _form_key.currentState.validate();
+    if (isValid) {
+      _form_key.currentState.save();
+      try {
+        setState(() {
+          _isLoading = true;
+        });
+        await Provider.of<AuthProvider>(context, listen: false)
+            .signIn(email, password);
+        Navigator.pushReplacementNamed(context, BottomOverviewScreen.routeName);
+      } catch (error) {
+        print(error);
+        _scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            content: Text(
+              error,
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: themeConst.errorColor,
+          ),
+        );
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
     mWidth = mediaConst.size.width;
     themeConst = Theme.of(context);
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
@@ -79,6 +116,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Email is required";
+                              }
+                              if (!emailRegex.hasMatch(value)) {
+                                return "Email is not valid";
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              email = value;
+                            },
                           ),
                           SizedBox(
                             height: 10,
@@ -93,6 +142,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                 keyboardType: TextInputType.visiblePassword,
                                 obscureText: _hidePassword,
                                 obscuringCharacter: "*",
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return "Password is required";
+                                  }
+                                  if (value.length < 6) {
+                                    return "Password must be at least 6 characters long";
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) {
+                                  password = value;
+                                },
                               ),
                               IconButton(
                                 icon: _hidePassword
@@ -137,14 +198,22 @@ class _LoginScreenState extends State<LoginScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              onPressed: () {},
-                              child: Text(
-                                "Sign In",
-                                style: themeConst.textTheme.headline6.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                              onPressed: _isLoading ? null : _saveForm,
+                              child: _isLoading
+                                  ? Center(
+                                      child: Container(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator()),
+                                    )
+                                  : Text(
+                                      "Sign In",
+                                      style: themeConst.textTheme.headline6
+                                          .copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
                             ),
                           ),
                           SizedBox(

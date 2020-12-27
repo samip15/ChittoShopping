@@ -4,6 +4,7 @@ import 'package:chito_shopping/model/screens/botton_overview_screen.dart';
 import 'package:chito_shopping/model/screens/profile/favoroite_screen.dart';
 import 'package:chito_shopping/model/screens/profile/orders_screen.dart';
 import 'package:chito_shopping/model/screens/user_product/edit_product_screen.dart';
+import 'package:chito_shopping/provider/auth_provider.dart';
 import 'package:chito_shopping/provider/cart_provider.dart';
 import 'package:chito_shopping/provider/order_provider.dart';
 import 'package:chito_shopping/provider/product_provider.dart';
@@ -34,6 +35,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (BuildContext context) {
             return Cart();
+          },
+        ),
+        ChangeNotifierProvider(
+          create: (BuildContext context) {
+            return AuthProvider();
           },
         ),
         ChangeNotifierProvider(

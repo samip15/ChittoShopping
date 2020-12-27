@@ -1,10 +1,11 @@
+import 'package:chito_shopping/auth/login_screen.dart';
 import 'package:chito_shopping/model/screens/profile/favoroite_screen.dart';
 import 'package:chito_shopping/model/screens/profile/orders_screen.dart';
-import 'package:chito_shopping/provider/API.dart';
+import 'package:chito_shopping/provider/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   ThemeData themeConst;
@@ -116,8 +117,12 @@ class ProfileScreen extends StatelessWidget {
                 .copyWith(fontWeight: FontWeight.w600),
           ),
           onTap: () async {
-            final response = await http.get(API.products);
-            print(response.body);
+            try {
+              await Provider.of<AuthProvider>(context, listen: false).logOut();
+              Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+            } catch (error) {
+              print(error);
+            }
           },
         ),
         Divider(

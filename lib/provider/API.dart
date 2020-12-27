@@ -3,4 +3,5 @@ class API {
       "https://chittoshopping-default-rtdb.firebaseio.com";
   static const String products = baseUrl + "/products.json";
   static const String orders = baseUrl + "/orders.json";
+  static const String users = baseUrl + "/users.json";
 }
