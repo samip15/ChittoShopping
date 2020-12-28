@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        initialRoute: LoginScreen.routeName,
+        home: MainPage(),
         routes: {
           BottomOverviewScreen.routeName: (ctx) => BottomOverviewScreen(),
           FavouritesScreen.routeName: (ctx) => FavouritesScreen(),
@@ -83,5 +83,23 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  bool _isInit = true;
+  bool _isLogin = false;
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: Provider.of<AuthProvider>(context).tryAutoLogin(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          return snapshot.data ? BottomOverviewScreen() : LoginScreen();
+        });
   }
 }
