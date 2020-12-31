@@ -41,7 +41,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ? Center(
                       child: Text("Something went wrong !!"),
                     )
-                  : snapshot.data == []
+                  : snapshot.data.length == 0
                       ? EmptyOrder(
                           type: "Order",
                         )

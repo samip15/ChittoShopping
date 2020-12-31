@@ -13,78 +13,87 @@ class UserProductScreen extends StatelessWidget {
     mWidth = mediaConst.size.width;
     themeConst = Theme.of(context);
     final productsProvider = Provider.of<Products>(context);
-    final userProducts = productsProvider.products;
-    return ListView.builder(
-      itemBuilder: (ctx, index) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundImage: NetworkImage(userProducts[index].imageUrl),
-            radius: 40,
-          ),
-          title: Text("${userProducts[index].title}"),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                  icon: Icon(
-                    Icons.edit,
-                    color: themeConst.primaryColor,
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, EditProductScreen.routeName,
-                        arguments: userProducts[index].id);
-                  }),
-              IconButton(
-                icon: Icon(
-                  Icons.delete,
-                  color: themeConst.errorColor,
+    final userProducts = productsProvider.userProducts;
+    return userProducts.length == 0
+        ? Center(
+            child: Text(
+              "Please Add Your Own Products",
+              style: themeConst.textTheme.headline6,
+              textAlign: TextAlign.center,
+            ),
+          )
+        : ListView.builder(
+            itemBuilder: (ctx, index) => Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(userProducts[index].imageUrl),
+                  radius: 40,
                 ),
-                onPressed: () async {
-                  try {
-                    await productsProvider
-                        .deleteProduct(userProducts[index].id);
-                    showDialog(
-                      context: context,
-                      builder: (dCtx) => AlertDialog(
-                        title: Text("Success"),
-                        content: Text("Deleted the item!"),
-                        actions: [
-                          RaisedButton(
-                            onPressed: () {
-                              Navigator.pop(dCtx);
-                            },
-                            child: Text("Okay"),
-                            color: themeConst.primaryColor,
-                          ),
-                        ],
+                title: Text("${userProducts[index].title}"),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          color: themeConst.primaryColor,
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, EditProductScreen.routeName,
+                              arguments: userProducts[index].id);
+                        }),
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                        color: themeConst.errorColor,
                       ),
-                    );
-                  } catch (error) {
-                    showDialog(
-                      context: context,
-                      builder: (dCtx) => AlertDialog(
-                        title: Text("Error!"),
-                        content: Text("Cannot delete The Item!"),
-                        actions: [
-                          RaisedButton(
-                            onPressed: () {
-                              Navigator.pop(dCtx);
-                            },
-                            child: Text("Okay"),
-                            color: themeConst.primaryColor,
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                },
+                      onPressed: () async {
+                        try {
+                          await productsProvider
+                              .deleteProduct(userProducts[index].id);
+                          showDialog(
+                            context: context,
+                            builder: (dCtx) => AlertDialog(
+                              title: Text("Success"),
+                              content: Text("Deleted the item!"),
+                              actions: [
+                                RaisedButton(
+                                  onPressed: () {
+                                    Navigator.pop(dCtx);
+                                  },
+                                  child: Text("Okay"),
+                                  color: themeConst.primaryColor,
+                                ),
+                              ],
+                            ),
+                          );
+                        } catch (error) {
+                          showDialog(
+                            context: context,
+                            builder: (dCtx) => AlertDialog(
+                              title: Text("Error!"),
+                              content: Text("Cannot delete The Item!"),
+                              actions: [
+                                RaisedButton(
+                                  onPressed: () {
+                                    Navigator.pop(dCtx);
+                                  },
+                                  child: Text("Okay"),
+                                  color: themeConst.primaryColor,
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ),
-      ),
-      itemCount: userProducts.length,
-    );
+            ),
+            itemCount: userProducts.length,
+          );
   }
 }

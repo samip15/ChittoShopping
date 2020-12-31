@@ -84,21 +84,25 @@ class _BottomOverviewScreenState extends State<BottomOverviewScreen> {
 
   @override
   void didChangeDependencies() async {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
+      if (this.mounted) {
+        setState(() {
+          _isLoading = true;
+        });
+      }
+
       try {
         await Provider.of<Products>(context, listen: false).fetchAllProducts();
       } catch (error) {
         print(error);
       }
     }
-    setState(() {
-      _isLoading = false;
-    });
+    if (this.mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
     _isInit = false;
   }
 

@@ -8,6 +8,7 @@ import 'package:chito_shopping/provider/auth_provider.dart';
 import 'package:chito_shopping/provider/cart_provider.dart';
 import 'package:chito_shopping/provider/order_provider.dart';
 import 'package:chito_shopping/provider/product_provider.dart';
+import 'package:custom_splash/custom_splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,9 +28,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
+        // ignore: missing_required_param
+        ChangeNotifierProxyProvider<AuthProvider, Products>(
           create: (BuildContext context) {
-            return Products();
+            return Products("", "");
+          },
+          update: (context, AuthProvider auth, Products updatedProducts) {
+            return Products(auth.token, auth.userId);
           },
         ),
         ChangeNotifierProvider(
@@ -42,9 +47,12 @@ class MyApp extends StatelessWidget {
             return AuthProvider();
           },
         ),
-        ChangeNotifierProvider(
+        ChangeNotifierProxyProvider<AuthProvider, Orders>(
           create: (BuildContext context) {
-            return Orders();
+            return Orders("", "");
+          },
+          update: (context, AuthProvider auth, Orders updatedOrders) {
+            return Orders(auth.token, auth.userId);
           },
         ),
       ],
@@ -95,11 +103,28 @@ class _MainPageState extends State<MainPage> {
   bool _isInit = true;
   bool _isLogin = false;
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      checkLogin();
+    }
+    _isInit = false;
+  }
+
+  void checkLogin() async {
+    _isLogin = await Provider.of<AuthProvider>(context).tryAutoLogin();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: Provider.of<AuthProvider>(context).tryAutoLogin(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          return snapshot.data ? BottomOverviewScreen() : LoginScreen();
-        });
+    return CustomSplash(
+      imagePath: "assets/images/app_logo.png",
+      backGroundColor: Colors.yellowAccent.shade400,
+      animationEffect: "fade-in",
+      logoSize: 200,
+      type: CustomSplashType.StaticDuration,
+      duration: 2500,
+      home: _isLogin ? BottomOverviewScreen() : LoginScreen(),
+    );
   }
 }
