@@ -12,6 +12,7 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   Future _fetchAllorders;
   bool _isInit = true;
   @override
@@ -27,6 +28,7 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Your Orders"),
       ),
