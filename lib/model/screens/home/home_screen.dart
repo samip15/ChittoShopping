@@ -91,124 +91,100 @@ class HomeScreen extends StatelessWidget {
     final flashSales = productsProvider.flashSaleProducts;
     final newSales = productsProvider.newProducts;
     return SafeArea(
-      child: Container(
-        padding: const EdgeInsets.only(top: 20),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              Container(
-                height: mHeight * 0.05,
-                child: TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    labelText: "search",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: mHeight * 0.015,
-              ),
-              HomeCarouselWidget(),
-              SizedBox(
-                height: mHeight * 0.03,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _getCategoryItems(
-                      title: "Clothing",
-                      onPress: () {
-                        Navigator.pushNamed(
-                            context, ProductListScreen.routeName, arguments: {
-                          "type": "Clothing",
-                          "diff": "category"
-                        });
-                      },
-                      icon: FontAwesomeIcons.tshirt,
-                      color: themeConst.primaryColor),
-                  _getCategoryItems(
-                    title: "Electronics",
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            SizedBox(
+              height: mHeight * 0.015,
+            ),
+            HomeCarouselWidget(),
+            SizedBox(
+              height: mHeight * 0.03,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _getCategoryItems(
+                    title: "Clothing",
                     onPress: () {
                       Navigator.pushNamed(context, ProductListScreen.routeName,
-                          arguments: {
-                            "type": "Electronics",
-                            "diff": "category"
-                          });
+                          arguments: {"type": "Clothing", "diff": "category"});
                     },
-                    icon: FontAwesomeIcons.laptop,
-                    color: Colors.green,
-                  ),
-                  _getCategoryItems(
-                      title: "Furniture",
-                      onPress: () {
-                        Navigator.pushNamed(
-                            context, ProductListScreen.routeName, arguments: {
-                          "type": "Furniture",
-                          "diff": "category"
-                        });
-                      },
-                      icon: FontAwesomeIcons.couch,
-                      color: Colors.blue),
-                  _getCategoryItems(
-                      title: "Sports",
-                      onPress: () {
-                        Navigator.pushNamed(
-                            context, ProductListScreen.routeName,
-                            arguments: {"type": "Sports", "diff": "category"});
-                      },
-                      icon: FontAwesomeIcons.basketballBall,
-                      color: Colors.purple),
-                ],
-              ),
-              SizedBox(
-                height: mHeight * 0.03,
-              ),
-              _getTitleWidget(
-                  title: "Flash Sale",
+                    icon: FontAwesomeIcons.tshirt,
+                    color: themeConst.primaryColor),
+                _getCategoryItems(
+                  title: "Electronics",
                   onPress: () {
                     Navigator.pushNamed(context, ProductListScreen.routeName,
-                        arguments: {"type": "Flash Sale", "diff": "type"});
-                  }),
-              Container(
-                height: mHeight * 0.24,
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(10),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: flashSales.length,
-                  itemBuilder: (ctx, index) {
-                    return ProductItem(
-                      id: flashSales[index].id,
-                    );
+                        arguments: {"type": "Electronics", "diff": "category"});
                   },
+                  icon: FontAwesomeIcons.laptop,
+                  color: Colors.green,
                 ),
+                _getCategoryItems(
+                    title: "Furniture",
+                    onPress: () {
+                      Navigator.pushNamed(context, ProductListScreen.routeName,
+                          arguments: {"type": "Furniture", "diff": "category"});
+                    },
+                    icon: FontAwesomeIcons.couch,
+                    color: Colors.blue),
+                _getCategoryItems(
+                    title: "Sports",
+                    onPress: () {
+                      Navigator.pushNamed(context, ProductListScreen.routeName,
+                          arguments: {"type": "Sports", "diff": "category"});
+                    },
+                    icon: FontAwesomeIcons.basketballBall,
+                    color: Colors.purple),
+              ],
+            ),
+            SizedBox(
+              height: mHeight * 0.03,
+            ),
+            _getTitleWidget(
+                title: "Flash Sale",
+                onPress: () {
+                  Navigator.pushNamed(context, ProductListScreen.routeName,
+                      arguments: {"type": "Flash Sale", "diff": "type"});
+                }),
+            Container(
+              height: mHeight * 0.24,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(10),
+                scrollDirection: Axis.horizontal,
+                itemCount: flashSales.length,
+                itemBuilder: (ctx, index) {
+                  return ProductItem(
+                    id: flashSales[index].id,
+                  );
+                },
               ),
-              SizedBox(
-                height: mHeight * 0.03,
+            ),
+            SizedBox(
+              height: mHeight * 0.03,
+            ),
+            _getTitleWidget(
+                title: "New Product",
+                onPress: () {
+                  Navigator.pushNamed(context, ProductListScreen.routeName,
+                      arguments: {"type": "New Product", "diff": "type"});
+                }),
+            Container(
+              height: mHeight * 0.23,
+              child: ListView.builder(
+                padding: const EdgeInsets.all(10),
+                scrollDirection: Axis.horizontal,
+                itemCount: newSales.length,
+                itemBuilder: (ctx, index) {
+                  return ProductItem(
+                    id: newSales[index].id,
+                  );
+                },
               ),
-              _getTitleWidget(
-                  title: "New Product",
-                  onPress: () {
-                    Navigator.pushNamed(context, ProductListScreen.routeName,
-                        arguments: {"type": "New Product", "diff": "type"});
-                  }),
-              Container(
-                height: mHeight * 0.23,
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(10),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: newSales.length,
-                  itemBuilder: (ctx, index) {
-                    return ProductItem(
-                      id: newSales[index].id,
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -4,11 +4,11 @@ import 'package:chito_shopping/model/screens/botton_overview_screen.dart';
 import 'package:chito_shopping/model/screens/profile/favoroite_screen.dart';
 import 'package:chito_shopping/model/screens/profile/orders_screen.dart';
 import 'package:chito_shopping/model/screens/user_product/edit_product_screen.dart';
+import 'package:chito_shopping/model/screens/user_product/splash_screen.dart';
 import 'package:chito_shopping/provider/auth_provider.dart';
 import 'package:chito_shopping/provider/cart_provider.dart';
 import 'package:chito_shopping/provider/order_provider.dart';
 import 'package:chito_shopping/provider/product_provider.dart';
-import 'package:custom_splash/custom_splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +28,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // ignore: missing_required_param
+        ChangeNotifierProvider(
+          create: (BuildContext context) {
+            return AuthProvider();
+          },
+        ),
         ChangeNotifierProxyProvider<AuthProvider, Products>(
           create: (BuildContext context) {
             return Products("", "");
@@ -40,11 +44,6 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (BuildContext context) {
             return Cart();
-          },
-        ),
-        ChangeNotifierProvider(
-          create: (BuildContext context) {
-            return AuthProvider();
           },
         ),
         ChangeNotifierProxyProvider<AuthProvider, Orders>(
@@ -117,14 +116,12 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomSplash(
+    return SplashScreen(
       imagePath: "assets/images/app_logo.png",
       backGroundColor: Colors.yellowAccent.shade400,
-      animationEffect: "fade-in",
       logoSize: 200,
-      type: CustomSplashType.StaticDuration,
       duration: 2500,
-      home: _isLogin ? BottomOverviewScreen() : LoginScreen(),
+      home: _isLogin ? BottomOverviewScreen.routeName : LoginScreen.routeName,
     );
   }
 }

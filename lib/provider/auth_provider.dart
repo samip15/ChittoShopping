@@ -156,8 +156,8 @@ class AuthProvider with ChangeNotifier {
       _authTimer.cancel();
       _authTimer = null;
     }
-    final timeToExpire = _expiryDate.difference(DateTime.now()).inSeconds;
-    _authTimer = Timer(Duration(seconds: timeToExpire), logOut);
+    final timeToExpire = _expiryDate.difference(DateTime.now()).inHours;
+    _authTimer = Timer(Duration(hours: timeToExpire), logOut);
   }
 
   // auto login user

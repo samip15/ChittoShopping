@@ -139,16 +139,22 @@ class Products with ChangeNotifier {
   // fetch all products from firebase
   Future<List<Product>> fetchAllProducts() async {
     try {
-      final response = await http.get(API.products + "?auth=$_token");
+      String url = API.products + "?auth=$_token";
+      print(url);
+      final response = await http.get(url);
+      final checkAuth = json.decode(response.body) as Map<String, dynamic>;
+      if (checkAuth.containsKey("error")) {
+        throw HttpException("Auth Expired,Plz relogin");
+      }
       final allMap = json.decode(response.body) as Map<String, dynamic>;
 
       // fetch favourite api also
       final favouriteResponse = await http.get(
         API.toggleFavourite + "$_userId.json" + "?auth=$_token",
       );
-
+      print("The products are $allMap");
       final favouriteData = json.decode(favouriteResponse.body);
-
+      print("The favouriotes are $favouriteData");
       final List<Product> allProducts = [];
       allMap.forEach((prodId, prodData) {
         allProducts.add(
@@ -291,5 +297,17 @@ class Products with ChangeNotifier {
       print(error);
       throw (error);
     }
+  }
+
+  // get search results according to query
+  List<Product> getSearchItems(String query) {
+    if (query.isNotEmpty && query != null) {
+      notifyListeners();
+      return _products
+          .where((prod) => prod.title.toLowerCase().startsWith(query))
+          .toList();
+    }
+    notifyListeners();
+    return [];
   }
 }

@@ -38,8 +38,8 @@ class Orders with ChangeNotifier {
       final response = await http.get(
         API.orders + "$_userId.json" + "?auth=$_token",
       );
-      print("my responce is" + response.body);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      print("my responce is $extractedData");
       if (extractedData == null) {
         return [];
       }
@@ -49,7 +49,7 @@ class Orders with ChangeNotifier {
           OrderItem(
             id: orderId,
             status: orderData['status'],
-            amount: double.parse(orderData['amount']),
+            amount: double.parse(orderData['amount'].toString()),
             products: (orderData['products'] as List<dynamic>)
                 .map((cartItem) => CartItem(
                     id: cartItem['id'],
@@ -63,9 +63,12 @@ class Orders with ChangeNotifier {
           ),
         );
       });
+      print("my responce is $_loadedOrders");
       _orders = _loadedOrders.reversed.toList();
       return orders;
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   }
 
   // add cart to order
@@ -102,6 +105,8 @@ class Orders with ChangeNotifier {
         ),
       );
       notifyListeners();
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   }
 }

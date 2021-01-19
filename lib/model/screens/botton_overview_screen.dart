@@ -1,8 +1,13 @@
+import 'dart:io';
+
+import 'package:chito_shopping/auth/login_screen.dart';
 import 'package:chito_shopping/model/screens/cart/cart_screen.dart';
+import 'package:chito_shopping/model/screens/home/custom_search_deligate.dart';
 import 'package:chito_shopping/model/screens/home/home_screen.dart';
 import 'package:chito_shopping/model/screens/profile/profile_screen.dart';
 import 'package:chito_shopping/model/screens/user_product/edit_product_screen.dart';
 import 'package:chito_shopping/model/screens/user_product/user_product_screen.dart';
+import 'package:chito_shopping/provider/auth_provider.dart';
 import 'package:chito_shopping/provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +15,7 @@ import 'package:provider/provider.dart';
 
 class BottomOverviewScreen extends StatefulWidget {
   static const String routeName = "/bottom_overview_screen";
+
   @override
   _BottomOverviewScreenState createState() => _BottomOverviewScreenState();
 }
@@ -18,8 +24,8 @@ class _BottomOverviewScreenState extends State<BottomOverviewScreen> {
   // current page
   int _selectedPageIndex = 0;
   ThemeData themeConst;
-  bool _isInit = true;
-  bool _isLoading = false;
+  Future _getAllProducts;
+
   // change the index
   void _selectPage(int index) {
     setState(() {
@@ -43,13 +49,34 @@ class _BottomOverviewScreenState extends State<BottomOverviewScreen> {
     }
   }
 
+  Future<void> getProducts() async {
+    try {
+      await Provider.of<Products>(context, listen: false).fetchAllProducts();
+    } on HttpException {
+      await Provider.of<AuthProvider>(context, listen: false).logOut();
+      Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+    } catch (error) {
+      print(error);
+    }
+  }
+
   Widget _getCurrentAppBar() {
     switch (_selectedPageIndex) {
       case 0:
         return AppBar(
-          toolbarHeight: 0,
-          primary: false,
-          titleSpacing: 0,
+          title: Image.asset(
+            "assets/images/app_logo_hori.png",
+            height: 40,
+            color: Colors.white,
+          ),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  showSearch(
+                      context: context, delegate: CustomSearchDeligate());
+                })
+          ],
           backgroundColor: themeConst.primaryColor,
         );
       case 1:
@@ -83,27 +110,9 @@ class _BottomOverviewScreenState extends State<BottomOverviewScreen> {
   }
 
   @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    if (_isInit) {
-      if (this.mounted) {
-        setState(() {
-          _isLoading = true;
-        });
-      }
-
-      try {
-        await Provider.of<Products>(context, listen: false).fetchAllProducts();
-      } catch (error) {
-        print(error);
-      }
-    }
-    if (this.mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-    _isInit = false;
+  void initState() {
+    super.initState();
+    _getAllProducts = getProducts();
   }
 
   @override
@@ -114,11 +123,16 @@ class _BottomOverviewScreenState extends State<BottomOverviewScreen> {
     );
     return Scaffold(
       appBar: _getCurrentAppBar(),
-      body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : _getCurrentPage(),
+      body: FutureBuilder(
+        future: _getAllProducts,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          return snapshot.connectionState == ConnectionState.waiting
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : _getCurrentPage();
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 20,
         currentIndex: _selectedPageIndex,

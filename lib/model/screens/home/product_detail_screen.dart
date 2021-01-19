@@ -49,10 +49,13 @@ class ProductDetailScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          Image.network(
-            loadedProduct.imageUrl,
-            height: mHeight * 0.4,
-            fit: BoxFit.contain,
+          Hero(
+            tag: 'product${loadedProduct.id}',
+            child: Image.network(
+              loadedProduct.imageUrl,
+              height: mHeight * 0.4,
+              fit: BoxFit.contain,
+            ),
           ),
           ListTile(
             title: Text(
