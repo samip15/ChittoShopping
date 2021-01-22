@@ -47,9 +47,13 @@ class CustomSearchDeligate extends SearchDelegate {
                         arguments: searchItems[index].id);
                   },
                   title: Text(searchItems[index].title),
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(searchItems[index].imageUrl),
-                  ),
+                  leading: searchItems[index].imageUrl == null ||
+                          searchItems[index].imageUrl.isEmpty
+                      ? Image.asset("assets/images/placeholder.png")
+                      : CircleAvatar(
+                          backgroundImage:
+                              NetworkImage(searchItems[index].imageUrl),
+                        ),
                 ),
               )
             : Center(
@@ -73,9 +77,13 @@ class CustomSearchDeligate extends SearchDelegate {
                     arguments: searchItems[index].id);
               },
               title: Text(searchItems[index].title),
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(searchItems[index].imageUrl),
-              ),
+              leading: searchItems[index].imageUrl == null ||
+                      searchItems[index].imageUrl.isEmpty
+                  ? Image.asset("assets/images/placeholder.png")
+                  : CircleAvatar(
+                      backgroundImage:
+                          NetworkImage(searchItems[index].imageUrl),
+                    ),
             ),
           );
   }

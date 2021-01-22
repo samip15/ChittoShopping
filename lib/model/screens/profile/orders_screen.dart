@@ -42,8 +42,8 @@ class _OrderScreenState extends State<OrderScreen>
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override

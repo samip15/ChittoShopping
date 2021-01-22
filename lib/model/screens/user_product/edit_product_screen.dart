@@ -30,6 +30,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final imagePiker = ImagePicker();
   bool _isLoading = false;
   bool _isInit = true;
+
+  /// saving products
   void _saveForm() async {
     final isValid = _formKey.currentState.validate();
     if (_id == null) {
@@ -40,6 +42,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             backgroundColor: themeConst.errorColor,
           ),
         );
+        return;
       }
     } else {
       if (_imageFile == null && _editProduct.imageUrl.isEmpty) {
@@ -49,6 +52,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
             backgroundColor: themeConst.errorColor,
           ),
         );
+        return;
       }
     }
     if (isValid) {
@@ -72,7 +76,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     try {
       if (_id != null) {
         await Provider.of<Products>(context, listen: false)
-            .updateProduct(_id, newProduct, _imageFile);
+            .updateProduct(_id, newProduct, _editProduct.imageUrl, _imageFile);
       } else {
         await Provider.of<Products>(context, listen: false)
             .addProduct(newProduct, _imageFile);
@@ -127,12 +131,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
         _imageFile,
         fit: BoxFit.cover,
       );
-    } else if (_editProduct.imageUrl.isNotEmpty &&
-        _editProduct.imageUrl != null) {
-      return Image.network(
-        _editProduct.imageUrl,
-        fit: BoxFit.cover,
-      );
+    } else if (_editProduct.imageUrl != null) {
+      if (_editProduct.imageUrl.isNotEmpty) {
+        return Image.network(
+          _editProduct.imageUrl,
+          fit: BoxFit.cover,
+        );
+      } else {
+        return Center(
+          child: Text(
+            "Upload product picture",
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
     } else {
       return Center(
         child: Text(

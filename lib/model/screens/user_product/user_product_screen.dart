@@ -26,10 +26,14 @@ class UserProductScreen extends StatelessWidget {
             itemBuilder: (ctx, index) => Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: NetworkImage(userProducts[index].imageUrl),
-                  radius: 40,
-                ),
+                leading: userProducts[index].imageUrl == null ||
+                        userProducts[index].imageUrl.isEmpty
+                    ? Image.asset("assets/images/placeholder.png")
+                    : CircleAvatar(
+                        backgroundImage:
+                            NetworkImage(userProducts[index].imageUrl),
+                        radius: 40,
+                      ),
                 title: Text("${userProducts[index].title}"),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,

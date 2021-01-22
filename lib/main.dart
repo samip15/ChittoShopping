@@ -9,6 +9,7 @@ import 'package:chito_shopping/provider/auth_provider.dart';
 import 'package:chito_shopping/provider/cart_provider.dart';
 import 'package:chito_shopping/provider/order_provider.dart';
 import 'package:chito_shopping/provider/product_provider.dart';
+import 'package:chito_shopping/theme/coustom_route_transaction.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
             return Products("", "");
           },
           update: (context, AuthProvider auth, Products updatedProducts) {
-            return Products(auth.token, auth.userId);
+            return updatedProducts..setTokenAndId(auth.token, auth.userId);
           },
         ),
         ChangeNotifierProvider(
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
             return Orders("", "");
           },
           update: (context, AuthProvider auth, Orders updatedOrders) {
-            return Orders(auth.token, auth.userId);
+            return updatedOrders..setTokenAndId(auth.token, auth.userId);
           },
         ),
       ],
@@ -65,6 +66,10 @@ class MyApp extends StatelessWidget {
           accentColor: Color(0xFFF7B733),
           canvasColor: Colors.white,
           fontFamily: "Montserrat",
+          pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.android: CustomPageTransactionBuilder(),
+            TargetPlatform.iOS: CustomPageTransactionBuilder(),
+          }),
           appBarTheme: AppBarTheme(
             elevation: 0,
             iconTheme: IconThemeData(color: Colors.white),

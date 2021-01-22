@@ -37,7 +37,7 @@ class _CartScreenState extends State<CartScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height: mHeight * 0.68,
+                    height: mHeight * 0.58,
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
                       itemBuilder: (context, i) => CartItem(
@@ -71,6 +71,8 @@ class _CartScreenState extends State<CartScreen> {
                             children: [
                               Text(
                                 "Total",
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
                                 style: themeConst.textTheme.subtitle1
                                     .copyWith(fontSize: 15, color: greyColor),
                               ),
@@ -79,6 +81,8 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                               Text(
                                 "Rs ${cartProvider.totalAmount}",
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
                                 style: themeConst.textTheme.headline5.copyWith(
                                     fontWeight: FontWeight.w600, fontSize: 20),
                               ),

@@ -32,10 +32,16 @@ class Product with ChangeNotifier {
 }
 
 class Products with ChangeNotifier {
-  final String _token;
-  final String _userId;
+  String _token;
+  String _userId;
 
   Products(this._token, this._userId);
+
+  /// setting token and user id
+  void setTokenAndId(String token, String userId) {
+    _token = token;
+    _userId = userId;
+  }
 
   List<Product> _products = [
     // Product(
@@ -226,15 +232,15 @@ class Products with ChangeNotifier {
   }
 
   // update product
-  Future<void> updateProduct(
-      String id, Product updatedProduct, File imageFile) async {
+  Future<void> updateProduct(String id, Product updatedProduct,
+      String prevImageUrl, File imageFile) async {
     // add to firebase
     try {
       final prodIndex = _products.indexWhere((prod) => prod.id == id);
       Map updatedMap = {
         "category": updatedProduct.category,
         "title": updatedProduct.title,
-        "imageUrl": updatedProduct.imageUrl,
+        "imageUrl": prevImageUrl,
         "description": updatedProduct.description,
         "rating": updatedProduct.rating,
         "price": updatedProduct.price,
@@ -250,8 +256,19 @@ class Products with ChangeNotifier {
         body: json.encode(updatedMap),
       );
       print(response.body);
-      _products[prodIndex] = updatedProduct;
-      _products.add(updatedProduct);
+      final editedProduct = Product(
+        id: updatedProduct.id,
+        category: updatedProduct.category,
+        title: updatedProduct.title,
+        imageUrl: imageFile == null ? prevImageUrl : updatedMap["imageUrl"],
+        description: updatedProduct.description,
+        rating: updatedProduct.rating,
+        price: updatedProduct.price,
+        type: updatedProduct.type,
+        creatorId: _userId,
+      );
+      _products.removeAt(prodIndex);
+      _products.add(editedProduct);
       notifyListeners();
     } catch (error) {
       print(error);
@@ -302,12 +319,10 @@ class Products with ChangeNotifier {
   // get search results according to query
   List<Product> getSearchItems(String query) {
     if (query.isNotEmpty && query != null) {
-      notifyListeners();
       return _products
           .where((prod) => prod.title.toLowerCase().startsWith(query))
           .toList();
     }
-    notifyListeners();
     return [];
   }
 }

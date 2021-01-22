@@ -67,7 +67,7 @@ class CartItem extends StatelessWidget {
         );
       },
       child: Container(
-        height: mHeight * 0.18,
+        height: mHeight * 0.20,
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -81,68 +81,73 @@ class CartItem extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(12),
                       bottomLeft: Radius.circular(12)),
-                  child: Image.network(
-                    loadedProduct.imageUrl,
-                    fit: BoxFit.fitHeight,
-                  ),
+                  child: loadedProduct.imageUrl == null ||
+                          loadedProduct.imageUrl.isEmpty
+                      ? AssetImage("assets/images/placeholder.png")
+                      : Image.network(loadedProduct.imageUrl),
                 ),
               ),
               SizedBox(
                 width: 15,
               ),
               Expanded(
-                flex: 4,
-                child: Row(
+                flex: 2,
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(title,
-                            style: themeConst.textTheme.subtitle1
-                                .copyWith(fontSize: 18)),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text("Rs. ${loadedProduct.price * quantity}",
-                            style: themeConst.textTheme.subtitle2.copyWith(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            )),
-                      ],
+                    Text(title,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                        style: themeConst.textTheme.subtitle1
+                            .copyWith(fontSize: 18)),
+                    SizedBox(
+                      height: 5,
                     ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                            padding: const EdgeInsets.all(0),
-                            icon: Icon(
-                              Icons.minimize,
-                              color: themeConst.primaryColor,
-                            ),
-                            onPressed: () {
-                              cartProvider.removeSingleItem(cartId);
-                            }),
-                        Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: greyColor)),
-                            child: Text("$quantity")),
-                        IconButton(
-                            padding: const EdgeInsets.all(0),
-                            icon: Icon(
-                              Icons.add,
-                              color: themeConst.primaryColor,
-                            ),
-                            onPressed: () {
-                              cartProvider.addToCart(cartId, title,
-                                  loadedProduct.price * quantity);
-                            })
-                      ],
-                    )
+                    Text("Rs. ${loadedProduct.price * quantity}",
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                        style: themeConst.textTheme.subtitle2.copyWith(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        )),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        padding: const EdgeInsets.all(0),
+                        icon: Icon(
+                          Icons.minimize,
+                          color: themeConst.primaryColor,
+                        ),
+                        onPressed: () {
+                          cartProvider.removeSingleItem(cartId);
+                        }),
+                    Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(color: greyColor)),
+                        child: Text(
+                          "$quantity",
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                        )),
+                    IconButton(
+                        padding: const EdgeInsets.all(0),
+                        icon: Icon(
+                          Icons.add,
+                          color: themeConst.primaryColor,
+                        ),
+                        onPressed: () {
+                          cartProvider.addToCart(
+                              cartId, title, loadedProduct.price * quantity);
+                        })
                   ],
                 ),
               ),

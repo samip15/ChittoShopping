@@ -51,11 +51,18 @@ class ProductDetailScreen extends StatelessWidget {
         children: [
           Hero(
             tag: 'product${loadedProduct.id}',
-            child: Image.network(
-              loadedProduct.imageUrl,
-              height: mHeight * 0.4,
-              fit: BoxFit.contain,
-            ),
+            child:
+                loadedProduct.imageUrl == null || loadedProduct.imageUrl.isEmpty
+                    ? Image.asset(
+                        "assets/images/placeholder.png",
+                        height: mHeight * 0.4,
+                        fit: BoxFit.contain,
+                      )
+                    : Image.network(
+                        loadedProduct.imageUrl,
+                        height: mHeight * 0.4,
+                        fit: BoxFit.contain,
+                      ),
           ),
           ListTile(
             title: Text(

@@ -42,9 +42,10 @@ class ProductItem extends StatelessWidget {
                   child: FadeInImage(
                     placeholder: AssetImage("assets/images/placeholder.png"),
                     fadeInCurve: Curves.bounceInOut,
-                    image: NetworkImage(
-                      loadedProduct.imageUrl,
-                    ),
+                    image: loadedProduct.imageUrl == null ||
+                            loadedProduct.imageUrl.isEmpty
+                        ? AssetImage("assets/images/placeholder.png")
+                        : NetworkImage(loadedProduct.imageUrl),
                     fit: BoxFit.cover,
                     height: mHeight * 0.12,
                   ),
